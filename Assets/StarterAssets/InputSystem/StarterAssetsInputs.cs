@@ -12,6 +12,8 @@ namespace StarterAssets
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
+		public bool shoot;
+		public bool pass;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -43,8 +45,27 @@ namespace StarterAssets
 		{
 			SprintInput(value.isPressed);
 		}
-#endif
 
+        // DEBUG: Vérifions si Unity appelle ces fonctions
+		public void OnShoot(InputValue value)
+		{
+			Debug.Log($"[INPUT] OnShoot appelé: {value.isPressed}");
+			ShootInput(value.isPressed);
+		}
+
+		public void OnPass(InputValue value)
+		{
+			Debug.Log($"[INPUT] OnPass appelé: {value.isPressed}");
+			PassInput(value.isPressed);
+		}
+
+        // Starter Assets utilise souvent "Attack" pour le clic gauche par défaut
+        public void OnAttack(InputValue value)
+        {
+            Debug.Log($"[INPUT] OnAttack appelé (clic gauche probable): {value.isPressed}");
+            ShootInput(value.isPressed);
+        }
+#endif
 
 		public void MoveInput(Vector2 newMoveDirection)
 		{
@@ -66,6 +87,16 @@ namespace StarterAssets
 			sprint = newSprintState;
 		}
 
+		public void ShootInput(bool newShootState)
+		{
+			shoot = newShootState;
+		}
+
+		public void PassInput(bool newPassState)
+		{
+			pass = newPassState;
+		}
+
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			SetCursorState(cursorLocked);
@@ -76,5 +107,4 @@ namespace StarterAssets
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
 		}
 	}
-	
 }

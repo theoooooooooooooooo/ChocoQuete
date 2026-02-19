@@ -13,6 +13,11 @@ public class GameManager : MonoBehaviour
 
     public bool jeuTermine = false;
 
+    [Header("Système de Spawn")]
+    public GameObject painAuChocolatPrefab;
+    public Transform[] spawnPoints;
+    public int nombreDePainsASpawner = 3;
+
     void Awake()
     {
         if (instance == null)
@@ -22,6 +27,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         tempsRestant = tempsMax;
+        SpawnPainsAuChocolat();
     }
 
     void Update()
@@ -73,5 +79,46 @@ public class GameManager : MonoBehaviour
             Destroy(pain);
         }
         Debug.Log("Tous les pains au chocolat ont été détruits !");
+    }
+
+    void SpawnPainsAuChocolat()
+    {
+        if (painAuChocolatPrefab == null)
+        {
+            Debug.LogError("Le prefab PainAuChocolat n'est pas assigné !");
+            return;
+        }
+
+        if (spawnPoints == null || spawnPoints.Length == 0)
+        {
+            Debug.LogError("Aucun point de spawn assigné !");
+            return;
+        }
+
+        if (nombreDePainsASpawner > spawnPoints.Length)
+        {
+            Debug.LogWarning("Le nombre de pains à spawner dépasse le nombre de points disponibles !");
+            nombreDePainsASpawner = spawnPoints.Length;
+        }
+
+        // Créer une liste des indices disponibles
+        System.Collections.Generic.List<int> indicesDisponibles = new System.Collections.Generic.List<int>();
+        for (int i = 0; i < spawnPoints.Length; i++)
+        {
+            indicesDisponibles.Add(i);
+        }
+
+        // Spawner les pains aléatoirement
+        for (int i = 0; i < nombreDePainsASpawner; i++)
+        {
+            if (indicesDisponibles.Count == 0) break;
+
+            int indexAleatoire = Random.Range(0, indicesDisponibles.Count);
+            int spawnIndex = indicesDisponibles[indexAleatoire];
+            indicesDisponibles.RemoveAt(indexAleatoire);
+
+            Instantiate(painAuChocolatPrefab, spawnPoints[spawnIndex].position, spawnPoints[spawnIndex].rotation);
+            Debug.Log("Pain au chocolat spawn au point : " + spawnIndex);
+        }
     }
 }

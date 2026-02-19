@@ -75,42 +75,41 @@ namespace StarterAssets
         [Tooltip("For locking the camera position on all axis")]
         public bool LockCameraPosition = false;
 
-        // cinemachine
-        private float _cinemachineTargetYaw;
-        private float _cinemachineTargetPitch;
+        protected float _cinemachineTargetYaw;
+        protected float _cinemachineTargetPitch;
 
         // player
-        private float _speed;
-        private float _animationBlend;
-        private float _targetRotation = 0.0f;
-        private float _rotationVelocity;
-        private float _verticalVelocity;
-        private float _terminalVelocity = 53.0f;
+        protected float _speed;
+        protected float _animationBlend;
+        protected float _targetRotation = 0.0f;
+        protected float _rotationVelocity;
+        protected float _verticalVelocity;
+        protected float _terminalVelocity = 53.0f;
 
         // timeout deltatime
-        private float _jumpTimeoutDelta;
-        private float _fallTimeoutDelta;
+        protected float _jumpTimeoutDelta;
+        protected float _fallTimeoutDelta;
 
         // animation IDs
-        private int _animIDSpeed;
-        private int _animIDGrounded;
-        private int _animIDJump;
-        private int _animIDFreeFall;
-        private int _animIDMotionSpeed;
+        protected int _animIDSpeed;
+        protected int _animIDGrounded;
+        protected int _animIDJump;
+        protected int _animIDFreeFall;
+        protected int _animIDMotionSpeed;
 
 #if ENABLE_INPUT_SYSTEM 
-        private PlayerInput _playerInput;
+        protected PlayerInput _playerInput;
 #endif
-        private Animator _animator;
-        private CharacterController _controller;
-        private StarterAssetsInputs _input;
-        private GameObject _mainCamera;
+        protected Animator _animator;
+        protected CharacterController _controller;
+        protected StarterAssetsInputs _input;
+        protected GameObject _mainCamera;
 
-        private const float _threshold = 0.01f;
+        protected const float _threshold = 0.01f;
 
-        private bool _hasAnimator;
+        protected bool _hasAnimator;
 
-        private bool IsCurrentDeviceMouse
+        protected bool IsCurrentDeviceMouse
         {
             get
             {
@@ -123,7 +122,7 @@ namespace StarterAssets
         }
 
 
-        private void Awake()
+        protected virtual void Awake()
         {
             // get a reference to our main camera
             if (_mainCamera == null)
@@ -132,11 +131,12 @@ namespace StarterAssets
             }
         }
 
-        private void Start()
+        protected virtual void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
+             
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM 
@@ -152,21 +152,22 @@ namespace StarterAssets
             _fallTimeoutDelta = FallTimeout;
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
-
+            if (_animator == null) _animator = GetComponentInChildren<Animator>();
+            _hasAnimator = true;
             JumpAndGravity();
             GroundedCheck();
             Move();
         }
 
-        private void LateUpdate()
+        protected virtual void LateUpdate()
         {
             CameraRotation();
         }
 
-        private void AssignAnimationIDs()
+        protected virtual void AssignAnimationIDs()
         {
             _animIDSpeed = Animator.StringToHash("Speed");
             _animIDGrounded = Animator.StringToHash("Grounded");
@@ -175,7 +176,7 @@ namespace StarterAssets
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
         }
 
-        private void GroundedCheck()
+        protected virtual void GroundedCheck()
         {
             // set sphere position, with offset
             Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
@@ -190,7 +191,7 @@ namespace StarterAssets
             }
         }
 
-        private void CameraRotation()
+        protected virtual void CameraRotation()
         {
             // if there is an input and camera position is not fixed
             if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
@@ -211,7 +212,7 @@ namespace StarterAssets
                 _cinemachineTargetYaw, 0.0f);
         }
 
-        private void Move()
+        protected virtual void Move()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
@@ -279,7 +280,7 @@ namespace StarterAssets
             }
         }
 
-        private void JumpAndGravity()
+        protected virtual void JumpAndGravity()
         {
             if (Grounded)
             {
