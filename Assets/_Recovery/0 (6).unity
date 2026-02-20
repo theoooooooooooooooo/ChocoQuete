@@ -491,7 +491,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0158714195da7ff45a07bffbe4d21780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MenuManager
-  nomSceneJeu: SceneJeu
+  nomSceneJeu: SceneTestJeu
   imageFondMenu: {fileID: 2800000, guid: 3543a0311bf74fa44bf1eb5ec1b534d9, type: 3}
 --- !u!4 &1515013905
 Transform:
